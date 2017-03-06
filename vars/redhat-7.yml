@@ -24,11 +24,23 @@ pip_install_distro_build_packages:
   - python2-pyOpenSSL
 
 pip_required_pip_packages:
-  - ndg-httpsclient # SSL SNI support
-  - requests # SSL SNI support
-  - urllib3 # SSL SNI support
+  - ndg-httpsclient;python_version<'3' # SSL SNI support
+  - requests;python_version<'3' # SSL SNI support
+  - urllib3;python_version<'3' # SSL SNI support
 
 pip_install_remove_distro_packages:
   - centos-openstack-release-*
   - centos-release-qemu-ev
   - epel-release
+
+pip_install_distro_scl_packages:
+  - rh-python35
+  - rh-python35-python-devel
+
+pip_py_defaults:
+  py2:
+    pip: /bin/pip2
+    python: /bin/python2
+  py3:
+    pip: /opt/rh/rh-python35/root/usr/bin/pip3
+    python: /opt/rh/rh-python35/root/usr/bin/python3

@@ -30,5 +30,5 @@ pip_install_distro_build_packages:
   - python-pyasn1
 
 pip_required_pip_packages:
-  - urllib3 # SSL SNI support
-  - requests # SSL SNI support
+  - urllib3;python_version<'3' # SSL SNI support
+  - requests;python_version<'3' # SSL SNI support

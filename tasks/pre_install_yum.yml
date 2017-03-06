@@ -55,3 +55,51 @@
     - user_external_repos_list is defined
   tags:
     - add-external-repo
+
+- name: Install CentOS software collections manager
+  yum:
+    name: "centos-release-scl"
+    state: "latest"
+  when:
+    - pip_py_default == "py3"
+    - ansible_pkg_mgr == 'yum'
+
+- name: Install CentOS software collections packages
+  yum:
+    name: "{{ item }}"
+    state: "latest"
+  with_items: "{{ pip_install_distro_scl_packages }}"
+  when:
+    - pip_py_default == "py3"
+    - ansible_pkg_mgr == 'yum'
+
+- name: "Create python35 SCL enablement script"
+  copy:
+    content: |
+      #!/bin/bash
+      OLD_PATH="$PATH"
+      source /opt/rh/rh-python35/enable
+      export X_SCLS="$(scl enable rh-python35 'echo $X_SCLS')"
+      export PATH="${OLD_PATH}:/opt/rh/rh-python35/root/usr/bin"
+    dest: "/var/opt/enablepython35.sh"
+    mode: "0755"
+  register: scl_set
+  when:
+    - pip_py_default == "py3"
+    - ansible_pkg_mgr == 'yum'
+
+- name: "Ensure python35 SCL is loaded"
+  lineinfile:
+    dest: "/etc/bashrc"
+    line: "source /var/opt/enablepython35.sh"
+    state: "present"
+  when:
+    - pip_py_default == "py3"
+    - ansible_pkg_mgr == 'yum'
+
+- name: "Load SCL once"
+  command: "/var/opt/enablepython35.sh"
+  when:
+    - pip_py_default == "py3"
+    - ansible_pkg_mgr == 'yum'
+    - scl_set is defined and scl_set | changed

@@ -16,9 +16,9 @@
 - block:
     - name: Install PIP
       command: >
-        python /opt/get-pip.py {{ pip_source_install_options }}
-                               {{ pip_get_pip_options }}
-                               {{ pip_packages | map('quote') | join (' ') }}
+        {{ pip_py_defaults[pip_py_default]['python'] }} /opt/get-pip.py {{ pip_source_install_options }} \
+        {{ pip_get_pip_options }} \
+        {{ pip_packages | map('quote') | join (' ') }}
       changed_when: false
       register: pip_install
       until: pip_install | success
@@ -28,9 +28,9 @@
   rescue:
     - name: Install PIP (fall back mode)
       command: >
-        python /opt/get-pip.py --isolated {{ pip_source_install_options }}
-                                          {{ pip_get_pip_options }}
-                                          {{ pip_packages | map('quote') | join (' ') }}
+        {{ pip_py_defaults[pip_py_default]['python'] }} /opt/get-pip.py --isolated {{ pip_source_install_options }} \
+        {{ pip_get_pip_options }} \
+        {{ pip_packages | map('quote') | join (' ') }}
       register: pip_install_fall_back
       until: pip_install_fall_back | success
       retries: 3
@@ -39,6 +39,7 @@
 - block:
     - name: Install pip packages
       pip:
+        executable: "{{ pip_py_defaults[pip_py_default]['pip'] }}"
         name: "{{ pip_required_pip_packages | map('quote') | join(' ') }}"
         state: "{{ pip_install_package_state }}"
         extra_args: >-
@@ -52,6 +53,7 @@
   rescue:
     - name: Install pip packages (fall back mode)
       pip:
+        executable: "{{ pip_py_defaults[pip_py_default]['pip'] }}"
         name: "{{ pip_required_pip_packages | map('quote') | join(' ') }}"
         state: "{{ pip_install_package_state }}"
         extra_args: >-

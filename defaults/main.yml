@@ -123,3 +123,17 @@ pip_install_options: ""
 
 # Always force getting the latest get-pip script
 pip_get_pip_force: yes
+
+# Set the default python details
+pip_py_default: py2
+pip_py_defaults:
+  py2:
+    pip: pip2
+    python: python2
+  py3:
+    pip: pip3
+    python: python3
+
+# Software collection installed. Currently this is only used on
+#  RHEL installations when Python3 is enabled.
+pip_install_distro_scl_packages: []

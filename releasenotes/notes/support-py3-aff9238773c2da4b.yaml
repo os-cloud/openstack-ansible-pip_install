@@ -1,0 +1,7 @@
+---
+features:
+  - The pip_install role can now support a python3 installation. To support
+    this new variables have been added, `pip_py_defaults` and `pip_py_default`,
+    which provide for python executable names including the default python
+    runtime. The variable ``pip_default`` has a value of "py2" which retains
+    the current compatibility.
